@@ -2,6 +2,7 @@ import axios from "axios";
 import { fetchToken } from "../views/auth/Auth";
 
 const API_SERVER = "https://wiseapi.ru/";
+//const API_SERVER = "http://localhost:8002/";
 
 const apiInstance = axios.create({
     baseURL: API_SERVER,
@@ -80,6 +81,49 @@ class API {
                 }
             });
         return response.data;
+    }
+
+    static CreateMessageFiles = async (data, params, token) => {
+        const response = await apiInstance.post(`/chat/message_file/create`, data, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+                },
+            params: params
+            });
+        return response.data;
+    }
+
+    static DownloadFile = async (file_id, filename, token) => {
+        /*const response = await apiInstance.get(`chat/download/${file_id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': "application/octet-stream"
+                }
+            })*/
+
+            const url = API_SERVER + `chat/download/${file_id}`;
+            const response = await axios({
+                url,
+                method: 'GET',
+                responseType: 'blob',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': "application/octet-stream"
+                }
+              });
+        const href = window.URL.createObjectURL(response.data);
+
+        const anchorElement = document.createElement('a');
+
+        anchorElement.href = href;
+        anchorElement.download = filename;
+
+        document.body.appendChild(anchorElement);
+        anchorElement.click();
+
+        document.body.removeChild(anchorElement);
+        window.URL.revokeObjectURL(href);
     }
 }
 
