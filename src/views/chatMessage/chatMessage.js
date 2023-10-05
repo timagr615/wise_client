@@ -4,6 +4,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth, useUser, removeToken } from '../auth/Auth';
 import API from '../../services/api';
+import Linkify from "react-linkify";
 
 const messages = [
     { id: 1, text: "Hi there!", sender: "bot" },
@@ -214,6 +215,13 @@ export default function ChatMessage(){
 const Message = ({ message , user_id, files}) => {
   let token = useAuth();
   const messagesEndRef = useRef(null)
+
+  let isEmail = (msg) => {
+    if(/(http(s?)):\/\//i.test(msg.message)){
+      return true
+    }
+    return false
+  }
   //console.log(user_id)
     const isBot = 1 == message.user_id;
     const scrollToBottom = () => {
@@ -256,7 +264,9 @@ const Message = ({ message , user_id, files}) => {
             borderRadius: isBot ? "20px 20px 20px 5px" : "20px 20px 5px 20px",
           }}
         >
-          <Typography variant="body1">{message.message}</Typography>
+          <Typography variant="body1"><Linkify>{message.message}</Linkify></Typography>
+          
+          
           {files.map((file) => (
            <Box sx={{ flexGrow: 1, overflow: "auto", p: 1 }}>
             <Link component="button" variant="body2" color="#2196F3" onClick={downloadFile(file.id, file.name)}>{file.name}</Link>
