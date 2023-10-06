@@ -16,9 +16,20 @@ export default function ChatAdmin() {
   let user = useUser();
   let token = useAuth();
   
+  const handleClearChat = (chat_id) => (event) => {
+    let fetchClear = async () => {
+      try {
+         const data = await API.ChatClear(chat_id, token.token);
+         console.log(data)
+      } catch(e){
+          console.log(e)
+      }
+    }
+    fetchClear();
+  }
 
   const handleChatClick = (params) => (event) => {
-    //console.log(params)
+    console.log(params)
     navigate("/admin/chat/messages", { state: { params } })
   }
 
@@ -38,9 +49,9 @@ export default function ChatAdmin() {
         }
         
       } catch(e){
-        console.log(user.user)
+        //console.log(user.user)
         let me = await API.GetMe(token.token);
-        console.log(token.token)
+        //console.log(token.token)
         user.setUser(me.data)
       }
     }
@@ -78,6 +89,11 @@ export default function ChatAdmin() {
       
     </ListItemButton>
     
+    </ListItem>
+    <ListItem>
+      <ListItemButton alignItems='flex-start' onClick={handleClearChat(user.id)}>
+        <ListItemText primary="Очистить"/>
+      </ListItemButton>
     </ListItem>
     <Divider  variant="inset" component="li" />
     </React.Fragment>

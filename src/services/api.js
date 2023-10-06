@@ -74,6 +74,15 @@ class API {
         return response;
     }
 
+    static ChatClear = async (data, token) => {
+        const response = await apiInstance.get(`chat/${data}/clear`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response;
+    }
+
     static CreateMessage = async (data, token) => {
         const response = await apiInstance.post(`/chat/message/create`, data, {
             headers: {
